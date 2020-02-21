@@ -56,6 +56,7 @@ int firstLocationOnGene(const char *file, int fileLength, string target, int sta
     return -1;
 }
 
+//Used to make a placeholder for where to search through the gene next
 int lastLocationOnGene(const char *file, int fileLength, string target, int start) {
     if (firstLocationOnGene(file, fileLength, target, start) != -1) {
         return firstLocationOnGene(file, fileLength, target, start) + size(target) - 1;
@@ -63,6 +64,8 @@ int lastLocationOnGene(const char *file, int fileLength, string target, int star
     return -1;
 }
 
+//Returns the nucleotides in the range starting at 
+//the position of the target (runs backwards to maintain structure)
 string frontThirty(int positionOfTarget, int range, const char *file, int fileLength, string target) {
     string firstThirty = "";
     if (positionOfTarget <= -1) {
@@ -81,6 +84,7 @@ string frontThirty(int positionOfTarget, int range, const char *file, int fileLe
     return firstThirty;
 }
 
+//Same as front thirty but runs forward to maintain structure
 string backThirty(int positionOfEndTarget, int range, const char *file, int fileLength, string target) {
     string lastThirty = "";
     if (positionOfEndTarget == -1) {
@@ -99,7 +103,7 @@ string backThirty(int positionOfEndTarget, int range, const char *file, int file
     return lastThirty;
 }
 
-
+//Uses above functions to add to files
 void addFrontFirstThirtyToFile(string target, int range, const char *file, int fileLength, string nameOfFile) {
     int i = 0;
     ofstream ofs;
@@ -130,6 +134,7 @@ void addFrontFirstThirtyToFile(string target, int range, const char *file, int f
 
 }
 
+//Same as addFrontThirty
 void addFrontSecondThirtyToFile(string target, int range, const char *file, int fileLength, string nameOfFile) {
     int i = 0;
     ofstream ofs;
@@ -300,6 +305,7 @@ void addBackThirdThirtyToFile(string target, int range, const char *file, int fi
 
 }
 
+//Returns string of nucleotides in front of range
 string frontNucleotides(int positionOfStart, int positionOfPreviousTarget, const char *file, int fileLength, int rangePlusTarget, int range) {
     string frontNucleotides = "";
     if (positionOfStart == -1 || positionOfPreviousTarget > positionOfStart || (positionOfStart + range*3) <= rangePlusTarget) {
@@ -312,12 +318,9 @@ string frontNucleotides(int positionOfStart, int positionOfPreviousTarget, const
     return frontNucleotides;
 }
 
-
+//Adds the extra front nucleotides to the file 
 void addFrontNucleotidesToFile(string target, int range, const char *file, int fileLength, string nameOfFile) {
     int positionOfPreviousTarget = 0;
-    int frontPositionOfPreviousTargetArr[10000] = {};
-    int endPositionOfTwoTargetsAgoArr[10000] = {};
-    endPositionOfTwoTargetsAgoArr[0] = 0;
     int i = 0;
     ofstream ofs;
     int rangePlusTarget = range * 3 + size(target);
@@ -375,8 +378,8 @@ void thirtyOfStringFront(string group, int place, ofstream &ofs, string nameOfFi
     }
     reverse(begin(thirty), end(thirty));
     ofs << ">" << nameOfFile << ":Front_Extra=" << start << "-" << ending << '\n';
-    //cout << thirty << endl;
-    ofs << thirty << endl;
+    //cout << thirty << '\n';
+    ofs << thirty << '\n';
 }
 
 void thirtyOfString(string group, int place, ofstream &ofs, string nameOfFile, int start, int fileLength) {
@@ -396,7 +399,7 @@ void thirtyOfString(string group, int place, ofstream &ofs, string nameOfFile, i
     }
     ofs << ">" << nameOfFile << ":Back_Extra=" << start << "-" << end << '\n';
     //cout << thirty << endl;
-    ofs << thirty << endl;
+    ofs << thirty << '\n';
 }
 
 string backNucleotides(int positionOfStart, const char *positionOfNextTarget, const char *file, int fileLength) {
@@ -419,7 +422,7 @@ void addBackNucleotidesToFile(string target, int range, const char *file, int fi
     ofstream ofs;
     ofs.open("NM_005228_3U_Extra_Back.txt", ofs.out | ofs.app);
     if (!ofs.is_open()) {
-        cout << "not writing" << endl;
+        cout << "not writing" << '\n';
     }
     if (backNucleotides(lastLocationOnGene(file, fileLength, target, i) + range * 3 + 1, positionOfNextTarget, file, fileLength) != "" && lastLocationOnGene(file, fileLength, target, i) != -1) {
        
@@ -516,7 +519,7 @@ int main() {
         ifstream ifs;
         ifs.open("EGFR_NM_005228_3U.txt");
         if (!ifs) {
-            cout << "didn't work" << endl;
+            cout << "didn't work" << '\n';
         }
         string sFile((istreambuf_iterator<char>(ifs)),
             istreambuf_iterator<char>());
